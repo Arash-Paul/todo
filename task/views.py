@@ -12,14 +12,26 @@ from .forms import TaskForm
 # Create your views here.
 @method_decorator(csrf_exempt, name='dispatch')   # class crsf_exempt
 class Task(View, TaskSerializeMixin):
-    def get(self, request, id, *args, **kwargs):
-        try:
-            query = Task_db.objects.get(id = id)
-        except Task_db.DoesNotExist:
-            json_data = json.dumps({'msg':'Invalid ID'})
-            return HttpResponse(json_data, content_type='application/json', status=404)
+    def get(self, request, *args, **kwargs):
+        data = request.body
+        valid_json = is_json(data)
+        if not valid_json:
+            json_data = json.dumps({'msg': 'Invalid JSON data'})
+            return HttpResponse(json_data, content_type='application/json', status=400)
+        dict = json.loads(data)
+        id = dict.get('id', None)
+        if id is not None:
+            try:
+                query = Task_db.objects.get(id = id)
+            except Task_db.DoesNotExist:
+                json_data = json.dumps({'msg':'Invalid ID'})
+                return HttpResponse(json_data, content_type='application/json', status=404)
+            else:
+                json_data = self.serialize([query,])
+                return HttpResponse(json_data, content_type='application/json', status=200)
         else:
-            json_data = self.serialize([query,])
+            query = Task_db.objects.all()
+            json_data = self.serialize(query)
             return HttpResponse(json_data, content_type='application/json', status=200)
 
     def post(self, request, *args, **kwargs):
@@ -38,8 +50,19 @@ class Task(View, TaskSerializeMixin):
             json_data = json.dumps(form.errors)
             return HttpResponse(json_data, content_type='application/json', status=400)
 
-    def put(self, request, id, *args, **kwargs):
-        task = get_object_by_id(id)
+    def put(self, request, *args, **kwargs):
+        data = request.body
+        valid_json = is_json(data)
+        if not valid_json:
+            json_data = json.dumps({'msg': 'Invalid JSON data'})
+            return HttpResponse(json_data, content_type='application/json', status=400)
+        dict = json.loads(data)
+        id = dict.get('id')
+        if id is not None:
+            task = get_object_by_id(id)
+        else:
+            json_data = json.dumps({'msg': 'Invalid ID'})
+            return HttpResponse(json_data, content_type='application/json', status=404)
         if task is None:
             json_data = json.dumps({'msg': 'Invalid ID'})
             return HttpResponse(json_data, content_type='application/json', status=404)
@@ -64,7 +87,14 @@ class Task(View, TaskSerializeMixin):
             json_data = json.dumps(form.errors)
             return HttpResponse(json_data, content_type='application/json', status=400)
 
-    def delete(self, request, id , *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
+        data = request.body
+        valid_json = is_json(data)
+        if not valid_json:
+            json_data = json.dumps({'msg': 'Invalid JSON data'})
+            return HttpResponse(json_data, content_type='application/json', status=400)
+        dict = json.loads(data)
+        id = dict.get('id')
         task = get_object_by_id(id)
         if task is None:
             json_data = json.dumps({'msg': 'Invalid ID'})
@@ -74,9 +104,9 @@ class Task(View, TaskSerializeMixin):
         json_data = json.dumps({'msg': 'Deleted Successfully'})
         return HttpResponse(json_data, content_type='application/json', status=200)
 
-
-class TaskList(View, TaskSerializeMixin):
-    def get(self, request, *args, **kwargs):
-        query = Task_db.objects.all()
-        json_data = self.serialize(query)
-        return HttpResponse(json_data, content_type='application/json')
+#
+# class TaskList(View, TaskSerializeMixin):
+#     def get(self, request, *args, **kwargs):
+#         query = Task_db.objects.all()
+#         json_data = self.serialize(query)
+#         return HttpResponse(json_data, content_type='application/json')

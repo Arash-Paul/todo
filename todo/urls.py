@@ -20,7 +20,6 @@ from task import views
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin route'),
-    url(r'^task/(?P<id>\d+)/$', views.Task.as_view()), # For URL Patterns "(?...)/$"
-    path('task/', views.Task.as_view()),    # POST method
-    path('tasks/', views.TaskList.as_view()),
+    # url(r'^task/(?P<id>\d+)/$', views.Task.as_view()), # For URL Patterns "(?...)/$"
+    path('task/', views.Task.as_view()),
 ]
