@@ -2,7 +2,8 @@
 import json, requests
 
 
-BASE_URL = 'http://127.0.0.1:8000'
+# BASE_URL = 'http://127.0.0.1:8000'    # Local Server
+BASE_URL = 'http://tadpol.herokuapp.com'    # Golobal Server
 ENDPOINT = '/task/'
 url = BASE_URL + ENDPOINT
 
