@@ -10,7 +10,7 @@ from .utils import is_json, get_object_by_id
 from .forms import TaskForm
 
 # Create your views here.
-@method_decorator(csrf_exempt, name='dispatch')   # class crsf_exempt
+# @method_decorator(csrf_exempt, name='dispatch')   # class crsf_exempt
 class Task(View, TaskSerializeMixin):
     def get(self, request, *args, **kwargs):
         data = request.body
@@ -103,10 +103,3 @@ class Task(View, TaskSerializeMixin):
         print(t)
         json_data = json.dumps({'msg': 'Deleted Successfully'})
         return HttpResponse(json_data, content_type='application/json', status=200)
-
-#
-# class TaskList(View, TaskSerializeMixin):
-#     def get(self, request, *args, **kwargs):
-#         query = Task_db.objects.all()
-#         json_data = self.serialize(query)
-#         return HttpResponse(json_data, content_type='application/json')

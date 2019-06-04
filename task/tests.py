@@ -1,9 +1,9 @@
 # from django.test import TestCase
-import json, requests
+import json, requests, time
 
 
-# BASE_URL = 'http://127.0.0.1:8000'    # Local Server
-BASE_URL = 'http://tadpol.herokuapp.com'    # Golobal Server
+BASE_URL = 'http://127.0.0.1:8000'    # Local Server
+# BASE_URL = 'http://tadpol.herokuapp.com'    # Golobal Server
 ENDPOINT = '/task/'
 url = BASE_URL + ENDPOINT
 
@@ -19,8 +19,8 @@ def get_resource(id):
             'id': int(id, 10)
         }
     resp = requests.get(url, data=json.dumps(data))
-    print(resp.status_code)
-    print(resp.json())
+    print('Status Code: ' + str(str(resp.status_code)))
+    print('data: ', resp.json())
 
 
 def create_resource(title, check, date):
@@ -30,8 +30,8 @@ def create_resource(title, check, date):
         'date_to_do': date
     }
     resp = requests.post(url, data=json.dumps(data))
-    print(resp.status_code)
-    print(resp.json())
+    print('Status Code: ' + str(resp.status_code))
+    print('data: ', resp.json())
 
 
 def update_resource(id, title, check, date):
@@ -42,17 +42,16 @@ def update_resource(id, title, check, date):
         'date_to_do': date
     }
     resp = requests.put(url, data=json.dumps(data))
-    print(resp.status_code)
-    print(resp.json())
-
+    print('Status Code: ' + str(resp.status_code))
+    print('data: ', resp.json())
 
 def delete_resource(id):
     data = {
         'id': int(id, 10)
     }
     resp = requests.delete(url, data=json.dumps(data))
-    print(resp.status_code)
-    print(resp.json())
+    print('Status Code: ' + str(resp.status_code))
+    print('data: ', resp.json())
 
 
 def initiate():
@@ -70,7 +69,6 @@ def initiate():
     print("================================")
     if flag is '1':
         id = input("Enter ID [OR] 0 to get all records: ")
-        get_resource(id)
         initiate()
     elif flag is '2':
         title = input("Title: ")
@@ -95,6 +93,6 @@ def initiate():
             initiate()
     else:
         print("---------- TEST ENDED ----------")
-        exit()
+        time.sleep(1)
 
 initiate()
