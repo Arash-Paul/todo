@@ -10,7 +10,26 @@ from .utils import is_json, get_object_by_id
 from .forms import TaskForm
 
 # Create your views here.
-# @method_decorator(csrf_exempt, name='dispatch')   # class crsf_exempt
+@method_decorator(csrf_exempt, name='dispatch')   # class crsf_exempt
+class Task_URI(View, TaskSerializeMixin):
+    def get(self, request, id, *args, **kwargs):
+        if id is not '0':
+            try:
+                query = Task_db.objects.get(id = id)
+            except Task_db.DoesNotExist:
+                json_data = json.dumps({'msg':'Invalid ID'})
+                return HttpResponse(json_data, content_type='application/json', status=404)
+            else:
+                json_data = self.serialize([query,])
+                return HttpResponse(json_data, content_type='application/json', status=200)
+        else:
+            query = Task_db.objects.all()
+            json_data = self.serialize(query)
+            return HttpResponse(json_data, content_type='application/json', status=200)
+
+
+
+@method_decorator(csrf_exempt, name='dispatch')   # class crsf_exempt
 class Task(View, TaskSerializeMixin):
     def get(self, request, *args, **kwargs):
         data = request.body

@@ -4,7 +4,7 @@ from .models import Task
 
 # Register your models here.
 class TaskList(admin.ModelAdmin):
-    list_display = ['id', 'title', 'date_to_do', 'check', 'timestamp']
+    list_display = ['id', 'user_id', 'title', 'date_to_do', 'check', 'timestamp']
 
 
 admin.site.register(Task, TaskList)
